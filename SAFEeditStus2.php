@@ -2,6 +2,7 @@
 <html lang="en">
 	<head>
 		<title>Edit Student</title>
+		<link rel="stylesheet" href="sofStyle.css">
 		<meta charset="utf-8">
 	</head>
 	<body>
@@ -22,9 +23,12 @@
 		
 		//Create query
 		$cleanMajor = filter_var($newMajor, FILTER_SANITIZE_STRING);
-		$sqlStu="UPDATE Students SET major='$cleanMajor' WHERE stuName='$stuName' ;" ;
+		$sqlStuPrepared="UPDATE Students SET major= ? WHERE stuName= ? " ;
+		$stmt = $conn->prepare($sqlStuPrepared);
+		$stmt->bind_param("ss", $cleanMajor, $stuName);
+		$stmt->execute();
 		//Execute query
-		$result = $conn->query($sqlStu) or die('Could not run query: '.$conn->error);
+		$result = $stmt->get_result();
 		echo "Record inserted";
 		header("Location:SAFEeditStus1.php");
 		exit();
